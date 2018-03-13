@@ -11,20 +11,38 @@ mongo = PyMongo(app)
 
 @app.route('/songs', methods=['GET'])
 def get_all_songs():
-    #print('reached all songs route:')
-
     songs = mongo.db.songs
     result = []
 
-    #print('made connection to db')
+    if(request.args.get('offset')):
+        offset = int(request.args['offset'])
+    else:
+        offset = 0
 
-    for s in songs.find():
+    starting_id = songs.find().sort('_id')
+    totalSongCount = starting_id.count()
+    last_id = starting_id[offset]['_id']
+    
+    if(request.args.get('limit')):
+        pagingLimit = int(request.args['limit'])
+    else:
+        pagingLimit = totalSongCount
+
+    #for s in songs.find():
+    for s in songs.find({'_id': {'$gte': last_id}}).sort('_id').limit(pagingLimit):
         result.append({"_id": str(s["_id"]), "artist": s["artist"],"title": s["title"],"difficulty": s["difficulty"],"level":s["level"],"released": s["released"],"rating": s["rating"]})
     
-    #print("going to return these songs now:")
-    #print(result)
+    if(offset + pagingLimit < totalSongCount):
+        next_url = '/songs?limit=' + str(pagingLimit) + '&offset=' + str(offset + pagingLimit)
+    else:
+        next_url = ''
 
-    return jsonify({"result": result})
+    if(offset > 0 and offset - pagingLimit >= 0):
+        prev_url = '/songs?limit=' + str(pagingLimit) + '&offset=' + str(offset - pagingLimit)
+    else:
+        prev_url = ''
+
+    return jsonify({"result": result, 'prev_url': prev_url, 'next_url': next_url})
 
 @app.route('/songs/avg/difficulty', methods=['GET'])
 @app.route('/songs/avg/difficulty/<int:level>', methods=['GET'])
