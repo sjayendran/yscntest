@@ -1,8 +1,10 @@
 from flask import json, jsonify
 from app import app
+from bson.objectid import ObjectId
 import unittest
 import random
 
+#Unit tests for API routes
 class FlaskAppTestCase(unittest.TestCase):
 
     def test_index(self):
@@ -83,6 +85,33 @@ class FlaskAppTestCase(unittest.TestCase):
         jsdata = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(len(jsdata["result"]) == 0)
+
+    def test_song_rating_update(self):
+        tester = app.test_client(self)
+        response = tester.get('/songs', content_type='text/json')
+        songList = json.loads(response.data)
+        songList = songList['result']
+        firstSong = songList[0]
+        firstSongRating = firstSong['rating']
+        firstSongID = firstSong['_id']
+        response = tester.post('/songs/rating/'+str(firstSongID)+'/'+str(firstSongRating), content_type='text/json')
+        jsdata = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(jsdata, {})
+
+    def test_song_rating_update_error(self):
+        tester = app.test_client(self)
+        response = tester.get('/songs', content_type='text/json')
+        songList = json.loads(response.data)
+        songList = songList['result']
+        firstSong = songList[0]
+        firstSongRating = firstSong['rating']
+        #manually change the object id to try to change 
+        #the rating of a songID that does not exist
+        response = tester.post('/songs/rating/'+str(ObjectId('5aa386d7f36d280504b501ee'))+'/'+str(firstSongRating), content_type='text/json')
+        jsdata = json.loads(response.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(jsdata['error'], "Invalid song id!")
 
 if __name__ == '__main__':
     unittest.main()

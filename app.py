@@ -9,6 +9,9 @@ app.config["MONGO_URI"] = "mongodb://apiadmin:yousiciantest@ds261078.mlab.com:61
 
 mongo = PyMongo(app)
 
+#mongodb for this test is hosted in MLAB (www.mlab.com) - a remote hosted mongo db
+
+#API endpoint to list ALL SONGS in the DB without any kind of filtering
 @app.route('/songs', methods=['GET'])
 def get_all_songs():
     songs = mongo.db.songs
@@ -28,7 +31,6 @@ def get_all_songs():
     else:
         pagingLimit = totalSongCount
 
-    #for s in songs.find():
     for s in songs.find({'_id': {'$gte': last_id}}).sort('_id').limit(pagingLimit):
         result.append({"_id": str(s["_id"]), "artist": s["artist"],"title": s["title"],"difficulty": s["difficulty"],"level":s["level"],"released": s["released"],"rating": s["rating"]})
     
@@ -44,6 +46,9 @@ def get_all_songs():
 
     return jsonify({"result": result, 'prev_url': prev_url, 'next_url': next_url})
 
+#API endpoint to get average difficulty for all songs
+#Same endpoint if supplied with a difficulty level can provide
+#average difficulty for ONLY those songs that match the level
 @app.route('/songs/avg/difficulty/', methods=['GET'])
 @app.route('/songs/avg/difficulty/<int:level>', methods=['GET'])
 def get_avg_song_difficulty(level=None):
@@ -66,13 +71,14 @@ def get_avg_song_difficulty(level=None):
 
     return jsonify({"result": {"average_song_difficulty": avg_difficulty}})
 
+#API endpoint to search for songs using a provided search string
+#searches are case-insensitive and search against the song Artist or Title
 @app.route('/songs/search/', methods=['GET'])
 @app.route('/songs/search/<string:message>', methods=['GET'])
 def get_matching_song(message=None):
     songs = mongo.db.songs
     result = []
     
-    #for s in songs.find({"_id": ObjectId("5aa3866bf36d280504b501d1")}):
     if message != None:
         for s in songs.find({'$or': [{'artist': re.compile(message, re.IGNORECASE)}, {'title': re.compile(message, re.IGNORECASE)}]}):
             result.append({"artist": s["artist"],"title": s["title"],"difficulty": s["difficulty"],"level":s["level"],"released": s["released"],"rating": s["rating"]})
@@ -83,6 +89,7 @@ def get_matching_song(message=None):
         return jsonify({"error": "Please enter a search string!"}), 400
 
 
+#API endpoint for updating song rating of a specific song with songID
 @app.route('/songs/rating/<string:song_id>/<song_rating>', methods=['POST'])
 def update_song_rating(song_id, song_rating):
     songs = mongo.db.songs
@@ -92,8 +99,9 @@ def update_song_rating(song_id, song_rating):
         songs.find_one_and_update({"_id": ObjectId(str(song_id))}, {"$set": {"rating": float(song_rating)}})
         return jsonify({})
     else:
-        return jsonify({"error": "Invalid song id!"})
+        return jsonify({"error": "Invalid song id!"}),400
 
+#index route to render the ReactJS created front-end app
 @app.route('/')
 def index():
     return render_template('index.html')        

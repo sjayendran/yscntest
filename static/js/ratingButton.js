@@ -35,9 +35,9 @@ class RatingButton extends React.Component{
         this.markRatingUsingStarsBasedOnRating();
     }
 
+    //mark star setting using an array of 5 star states, 
+    //based on given rating property
     markRatingUsingStarsBasedOnRating(){
-        //console.log("this is the element:");
-        //console.log(this.props);
         let roundedRating = Math.round(this.props.rating);
         let starSetting = [false, false, false, false, false];
         for(let i = 0; i < 5; i++){
@@ -51,6 +51,7 @@ class RatingButton extends React.Component{
         this.setState({stars_checked:starSetting});
     }
 
+    //hit API with POST request and new rating for chosen songID
     manualRatingUpdate(newRating){
         let actualRatingAPIURL = songRatingAPIURL.replace('<songid>', this.props.songID).replace('<songrating>', newRating);
         fetch(actualRatingAPIURL, {
@@ -58,6 +59,7 @@ class RatingButton extends React.Component{
         }).then(document.getElementById('updateSongListOnRatingPush').click());
     }
 
+    //render method for rating button component ONLY
     render() {
         return (
             <div>
