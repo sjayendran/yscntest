@@ -1,0 +1,34 @@
+{
+  "name": "yscn_app",
+  "version": "1.0.0",
+  "description": "This exercise is meant to test both your basic backend and front-end coding skills. It is cut into 2 parts:  - The backend part, we will ask you to create a small Flask API.  - The front-end part, you will be using the API made on the first part to build a front-end around it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YousicianGit/fullstack-web-dev-test-skullncode.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YousicianGit/fullstack-web-dev-test-skullncode/issues"
+  },
+  "homepage": "https://github.com/YousicianGit/fullstack-web-dev-test-skullncode#readme",
+  "dependencies": {
+    "lodash": "^4.17.5",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "semantic-ui-react": "^0.78.3",
+    "style-it": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.40",
+    "@babel/preset-react": "^7.0.0-beta.40",
+    "babel-loader": "8.0.0-beta.0",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.11"
+  }
+}
