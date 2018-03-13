@@ -44,7 +44,7 @@ def get_all_songs():
 
     return jsonify({"result": result, 'prev_url': prev_url, 'next_url': next_url})
 
-@app.route('/songs/avg/difficulty', methods=['GET'])
+@app.route('/songs/avg/difficulty/', methods=['GET'])
 @app.route('/songs/avg/difficulty/<int:level>', methods=['GET'])
 def get_avg_song_difficulty(level=None):
     songs = mongo.db.songs
