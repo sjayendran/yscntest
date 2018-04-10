@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 let uncheckedButton = {
-    backgroundImage: 'url("../static/img/button.png")',
+    backgroundImage: 'url("./img/button.png")',
     backgroundRepeat:'no-repeat',
     backgroundPosition: 'center',
     border: 'none',
@@ -12,7 +12,7 @@ let uncheckedButton = {
 };
 
 let checkedButton = {
-    backgroundImage: 'url("../static/img/buttonChecked.png")',
+    backgroundImage: 'url("./img/buttonChecked.png")',
     backgroundRepeat:'no-repeat',
     backgroundPosition: 'center',
     border: 'none',
@@ -35,7 +35,7 @@ class RatingButton extends React.Component{
         this.markRatingUsingStarsBasedOnRating();
     }
 
-    //mark star setting using an array of 5 star states, 
+    //mark star setting using an array of 5 star states,
     //based on given rating property
     markRatingUsingStarsBasedOnRating(){
         let roundedRating = Math.round(this.props.rating);
